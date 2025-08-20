@@ -15,7 +15,7 @@ class JournalEntry {
     required this.createdAt,
     required this.updatedAt,
     List<String>? tags,
-  });
+  }) : tags = tags ?? <String>[];
 
   String get formattedDate => DateFormat.yMMMEd().add_jm().format(updatedAt);
 

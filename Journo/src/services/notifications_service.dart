@@ -19,8 +19,20 @@ class NotificationsService {
       priority: Priority.defaultPriority,
     );
     final NotificationDetails details = NotificationDetails(android: androidDetails);
-    final Time scheduleTime = Time(time.hour, time.minute);
-    await _plugin.showDailyAtTime(1, 'Journo', 'Write a few lines today.', scheduleTime, details);
+    final TimeOfDay t = time;
+    final DateTime now = DateTime.now();
+    DateTime scheduled = DateTime(now.year, now.month, now.day, t.hour, t.minute);
+    if (scheduled.isBefore(now)) scheduled = scheduled.add(const Duration(days: 1));
+    await _plugin.zonedSchedule(
+      1,
+      'Journo',
+      'Write a few lines today.',
+      scheduled,
+      details,
+      androidAllowWhileIdle: true,
+      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
+      matchDateTimeComponents: DateTimeComponents.time,
+    );
   }
 
   Future<void> cancelDailyReminder() async {
