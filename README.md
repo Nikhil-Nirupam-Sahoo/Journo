@@ -14,5 +14,5 @@ npm install
 npm run dev
 ```
 
-##LICENSE
+## LICENSE
 See `LICENSE`
