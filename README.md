@@ -1,18 +1,39 @@
 # Journo
-Just a normal quotes app made by an aspiring developer/programmer. *A minimalist offline journal & quote app.*
 
-Don't expect a good README file from me. I'm just lazy. I do like documentation but I don't want to.
+Journo is a minimal, privacy-first, cross-platform journal app built with Flutter.
 
-## 🚀 Getting Started
+Supported platforms: Android, Windows, Linux, macOS.
 
-Just copy these codes into your Terminal and you're good to go.
+## Features
 
-```bash
-git clone https://github.com/Nikhil-Nirupam-Sahoo/Journo.git
-cd Journo
-npm install
-npm run dev
+- Create, edit, and delete journal entries
+- Local-first storage using JSON on device
+- Search and filter by date
+- Daily quote (from `assets/quotes.json`)
+
+## Getting Started
+
+1. Install Flutter (`>=3.22.0`).
+2. Enable desktop platforms as needed (`flutter config --enable-linux-desktop`, `--enable-windows-desktop`, `--enable-macos-desktop`).
+3. From project root:
+   ```bash
+   flutter pub get
+   flutter run
+   ```
+
+The `lib` directory is a symlink to `src` for a clearer app structure.
+
+## Project Structure
+
+```
+Journo/
+ ├── assets/          # Quotes, icons, logo
+ ├── src/             # App source code (symlinked as lib/ for Flutter)
+ ├── README.md
+ └── LICENSE
 ```
 
-## LICENSE
-See `LICENSE`
+## License
+
+MIT
++
