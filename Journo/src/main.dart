@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'pages/home_page.dart';
+import 'services/settings_service.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const JournoApp());
+  final ThemeController themeController = ThemeController(SettingsService());
+  await themeController.load();
+  runApp(JournoApp(themeController: themeController));
 }
 
 class JournoApp extends StatelessWidget {
-  const JournoApp({super.key});
+  const JournoApp({super.key, required this.themeController});
+  final ThemeController themeController;
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +27,7 @@ class JournoApp extends StatelessWidget {
         brightness: Brightness.dark,
         useMaterial3: true,
       ),
+      themeMode: themeController.themeMode,
       home: const HomePage(),
     );
   }

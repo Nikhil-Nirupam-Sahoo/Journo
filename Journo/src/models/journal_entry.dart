@@ -6,6 +6,7 @@ class JournalEntry {
   String body;
   DateTime createdAt;
   DateTime updatedAt;
+  List<String> tags;
 
   JournalEntry({
     required this.id,
@@ -13,6 +14,7 @@ class JournalEntry {
     required this.body,
     required this.createdAt,
     required this.updatedAt,
+    List<String>? tags,
   });
 
   String get formattedDate => DateFormat.yMMMEd().add_jm().format(updatedAt);
@@ -23,6 +25,7 @@ class JournalEntry {
         'body': body,
         'createdAt': createdAt.toIso8601String(),
         'updatedAt': updatedAt.toIso8601String(),
+        'tags': tags,
       };
 
   factory JournalEntry.fromJson(Map<String, dynamic> json) => JournalEntry(
@@ -31,5 +34,6 @@ class JournalEntry {
         body: json['body'] as String,
         createdAt: DateTime.parse(json['createdAt'] as String),
         updatedAt: DateTime.parse(json['updatedAt'] as String),
+        tags: (json['tags'] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? <String>[],
       );
 }
