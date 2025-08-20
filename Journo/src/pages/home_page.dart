@@ -30,10 +30,18 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _initialize() async {
     final List<JournalEntry> loaded = await _storage.loadEntries();
-    final String? q = await _quotes.getDailyQuote();
+    final String? q = await _quotes.getRandomQuote();
     setState(() {
       _entries = loaded..sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
       _filtered = List<JournalEntry>.from(_entries);
+      _quote = q;
+    });
+  }
+
+  Future<void> _shuffleQuote() async {
+    final String? q = await _quotes.getRandomQuote(exclude: _quote);
+    if (!mounted) return;
+    setState(() {
       _quote = q;
     });
   }
@@ -106,6 +114,11 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const Text('Journo'),
         actions: <Widget>[
+          IconButton(
+            tooltip: 'Shuffle Quote',
+            icon: const Icon(Icons.refresh),
+            onPressed: _shuffleQuote,
+          ),
           IconButton(
             tooltip: 'New Entry',
             icon: const Icon(Icons.add),
