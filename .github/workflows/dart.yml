@@ -1,0 +1,75 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: Dart
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps: flutter run -d linux -t src/main.dart
+
+
+Launching src/main.dart on Linux in debug mode...
+ERROR: src/pages/home_page.dart:147:37: Error: The method 'ThemeController' isn't defined for the class '_HomePageState'.
+ERROR:  - '_HomePageState' is from 'src/pages/home_page.dart'.
+ERROR: Try correcting the name to the name of an existing method, or defining a method named 'ThemeController'.
+ERROR:       SettingsPage(themeController: ThemeController(SettingsService())..load()),
+ERROR:                                     ^^^^^^^^^^^^^^^
+ERROR: src/pages/home_page.dart:147:53: Error: The method 'SettingsService' isn't defined for the class '_HomePageState'.
+ERROR:  - '_HomePageState' is from 'src/pages/home_page.dart'.
+ERROR: Try correcting the name to the name of an existing method, or defining a method named 'SettingsService'.
+ERROR:       SettingsPage(themeController: ThemeController(SettingsService())..load()),
+ERROR:                                                     ^^^^^^^^^^^^^^^
+ERROR: src/services/notifications_service.dart:22:11: Error: 'Time' isn't a type.
+ERROR:     final Time scheduleTime = Time(time.hour, time.minute);
+ERROR:           ^^^^
+ERROR: src/services/notifications_service.dart:22:31: Error: The method 'Time' isn't defined for the class 'NotificationsService'.
+ERROR:  - 'NotificationsService' is from 'src/services/notifications_service.dart'.
+ERROR: Try correcting the name to the name of an existing method, or defining a method named 'Time'.
+ERROR:     final Time scheduleTime = Time(time.hour, time.minute);
+ERROR:                               ^^^^
+ERROR: src/services/notifications_service.dart:23:19: Error: The method 'showDailyAtTime' isn't defined for the class 'FlutterLocalNotificationsPlugin'.
+ERROR:  - 'FlutterLocalNotificationsPlugin' is from 'package:flutter_local_notifications/src/flutter_local_notifications_plugin.dart' ('../../.pub-cache/hosted/pub.dev/flutter_local_notifications-17.2.4/lib/src/flutter_local_notifications_plugin.dart').
+ERROR: Try correcting the name to the name of an existing method, or defining a method named 'showDailyAtTime'.
+ERROR:     await _plugin.showDailyAtTime(1, 'Journo', 'Write a few lines today.', scheduleTime, details);
+ERROR:                   ^^^^^^^^^^^^^^^
+ERROR: src/models/journal_entry.dart:9:16: Error: Field 'tags' should be initialized because its type 'List<String>' doesn't allow null.
+ERROR:  - 'List' is from 'dart:core'.
+ERROR:   List<String> tags;
+ERROR:                ^^^^
+ERROR: Target kernel_snapshot_program failed: Exception
+Building Linux application...                                           
+Error: Build process failed
+      - uses: actions/checkout@v4
+
+      # Note: This workflow uses the latest stable version of the Dart SDK.
+      # You can specify other versions if desired, see documentation here:
+      # https://github.com/dart-lang/setup-dart/blob/main/README.md
+      # - uses: dart-lang/setup-dart@v1
+      - uses: dart-lang/setup-dart@9a04e6d73cca37bd455e0608d7e5092f881fd603
+
+      - name: Install dependencies
+        run: dart pub get
+
+      # Uncomment this step to verify the use of 'dart format' on each commit.
+      # - name: Verify formatting
+      #   run: dart format --output=none --set-exit-if-changed .
+
+      # Consider passing '--fatal-infos' for slightly stricter analysis.
+      - name: Analyze project source
+        run: dart analyze
+
+      # Your project will need to have tests in test/ and a dependency on
+      # package:test for this step to succeed. Note that Flutter projects will
+      # want to change this to 'flutter test'.
+      - name: Run tests
+        run: dart test
