@@ -13,3 +13,6 @@ cd Journo
 npm install
 npm run dev
 ```
+
+##LICENSE
+See `LICENSE`
