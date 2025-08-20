@@ -1,3 +1,5 @@
+}) : tags = tags ?? <String>[];
+
 import 'package:intl/intl.dart';
 
 class JournalEntry {
