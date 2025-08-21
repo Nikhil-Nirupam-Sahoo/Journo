@@ -11,7 +11,8 @@ import 'edit_page.dart';
 import '../services/settings_service.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({super.key, required this.themeController});
+  final ThemeController themeController;
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -83,6 +84,7 @@ class _HomePageState extends State<HomePage> {
     if (edited != null) {
       setState(() {
         _entries.insert(0, edited);
+        _entries.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
         _applySearch();
       });
       await _storage.saveEntries(_entries);
@@ -145,7 +147,7 @@ class _HomePageState extends State<HomePage> {
         onDelete: _deleteEntry,
       ),
       CalendarPage(entries: _entries),
-      SettingsPage(themeController: ThemeController(SettingsService())..load()),
+      SettingsPage(themeController: widget.themeController),
     ];
 
     return Scaffold(

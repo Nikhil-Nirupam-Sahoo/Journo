@@ -20,6 +20,7 @@ class _SettingsPageState extends State<SettingsPage> {
   bool _biometric = false;
   bool _reminderEnabled = false;
   TimeOfDay _reminderTime = const TimeOfDay(hour: 20, minute: 0);
+  bool _biometricSupported = true;
 
   @override
   void initState() {
@@ -32,18 +33,28 @@ class _SettingsPageState extends State<SettingsPage> {
     final bool bio = await _settings.loadBiometricLockEnabled();
     final bool remind = await _settings.loadReminderEnabled();
     final TimeOfDay time = await _settings.loadReminderTime();
+    bool supported = true;
+    try {
+      supported = (await _auth.canCheckBiometrics) && (await _auth.isDeviceSupported());
+    } catch (_) {
+      supported = false;
+    }
     setState(() {
-      _biometric = bio;
+      _biometric = bio && supported;
       _reminderEnabled = remind;
       _reminderTime = time;
+      _biometricSupported = supported;
     });
   }
 
   Future<void> _toggleBiometric(bool value) async {
     if (value) {
-      final bool can = await _auth.canCheckBiometrics && await _auth.isDeviceSupported();
-      if (!can) return;
-      final bool ok = await _auth.authenticate(localizedReason: 'Enable biometric lock');
+      bool ok = false;
+      try {
+        ok = await _auth.authenticate(localizedReason: 'Enable biometric lock', options: const AuthenticationOptions(stickyAuth: true));
+      } catch (_) {
+        ok = false;
+      }
       if (!ok) return;
     }
     setState(() => _biometric = value);
@@ -98,8 +109,9 @@ class _SettingsPageState extends State<SettingsPage> {
           const Divider(),
           SwitchListTile(
             title: const Text('Biometric Lock'),
-            value: _biometric,
-            onChanged: _toggleBiometric,
+            subtitle: !_biometricSupported ? const Text('Not supported on this device') : null,
+            value: _biometric && _biometricSupported,
+            onChanged: _biometricSupported ? _toggleBiometric : null,
           ),
           const Divider(),
           SwitchListTile(

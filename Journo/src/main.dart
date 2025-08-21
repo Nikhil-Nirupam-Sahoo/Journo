@@ -15,20 +15,25 @@ class JournoApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Journo',
-      theme: ThemeData(
-        colorSchemeSeed: Colors.indigo,
-        brightness: Brightness.light,
-        useMaterial3: true,
-      ),
-      darkTheme: ThemeData(
-        colorSchemeSeed: Colors.indigo,
-        brightness: Brightness.dark,
-        useMaterial3: true,
-      ),
-      themeMode: themeController.themeMode,
-      home: const HomePage(),
+    return AnimatedBuilder(
+      animation: themeController,
+      builder: (BuildContext context, _) {
+        return MaterialApp(
+          title: 'Journo',
+          theme: ThemeData(
+            colorSchemeSeed: Colors.indigo,
+            brightness: Brightness.light,
+            useMaterial3: true,
+          ),
+          darkTheme: ThemeData(
+            colorSchemeSeed: Colors.indigo,
+            brightness: Brightness.dark,
+            useMaterial3: true,
+          ),
+          themeMode: themeController.themeMode,
+          home: HomePage(themeController: themeController),
+        );
+      },
     );
   }
 }
