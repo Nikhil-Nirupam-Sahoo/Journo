@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../models/journal_entry.dart';
 
@@ -75,12 +76,7 @@ class _CalendarPageState extends State<CalendarPage> {
         final int count = _counts[key] ?? 0;
         cells.add(Expanded(
           child: GestureDetector(
-            onTap: () {
-              // Placeholder: could open entries list filtered by date
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('${cursor.toLocal().toString().split(' ').first}: $count entries')),
-              );
-            },
+            onTap: () => _showDayEntries(context, key),
             child: Container(
               margin: const EdgeInsets.all(4),
               height: 64,
@@ -106,6 +102,55 @@ class _CalendarPageState extends State<CalendarPage> {
     }
 
     return rows;
+  }
+
+  Future<void> _showDayEntries(BuildContext context, DateTime day) async {
+    final List<JournalEntry> dayEntries = widget.entries
+        .where((JournalEntry e) => e.updatedAt.year == day.year && e.updatedAt.month == day.month && e.updatedAt.day == day.day)
+        .toList()
+      ..sort((JournalEntry a, JournalEntry b) => b.updatedAt.compareTo(a.updatedAt));
+
+    final String label = DateFormat.yMMMMEEEEd().format(day);
+    await showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      isScrollControlled: true,
+      builder: (BuildContext context) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height * 0.6,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(label, style: Theme.of(context).textTheme.titleMedium),
+                  const SizedBox(height: 8),
+                  if (dayEntries.isEmpty)
+                    const Expanded(child: Center(child: Text('No entries for this day')))
+                  else
+                    Expanded(
+                      child: ListView.separated(
+                        itemCount: dayEntries.length,
+                        separatorBuilder: (_, __) => const Divider(height: 1),
+                        itemBuilder: (BuildContext context, int index) {
+                          final JournalEntry e = dayEntries[index];
+                          final String time = DateFormat.jm().format(e.updatedAt);
+                          return ListTile(
+                            leading: const Icon(Icons.note_outlined),
+                            title: Text(e.title.isEmpty ? 'Untitled' : e.title),
+                            subtitle: Text(time),
+                          );
+                        },
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
