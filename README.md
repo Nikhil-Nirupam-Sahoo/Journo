@@ -1,6 +1,6 @@
 # Journo
 
-Journo is a minimal, privacy-first, cross-platform journal app built with Flutter.
+Journo is a minimal, cross-platform journal app built with Flutter.
 
 Supported platforms: Android, Windows, Linux, macOS.
 
