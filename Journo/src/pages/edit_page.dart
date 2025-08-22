@@ -4,10 +4,12 @@ import 'dart:typed_data';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../models/journal_entry.dart';
 import '../services/file_service.dart';
 import 'draw_page.dart';
+import 'image_viewer_page.dart';
 
 class EditPage extends StatefulWidget {
   const EditPage({super.key, required this.entry});
@@ -33,6 +35,15 @@ class _EditPageState extends State<EditPage> {
     setState(() => _attachments.add(Attachment(type: 'image', path: saved.path)));
   }
 
+  Future<void> _takePhoto() async {
+    if (!Platform.isAndroid) return;
+    final ImagePicker picker = ImagePicker();
+    final XFile? img = await picker.pickImage(source: ImageSource.camera);
+    if (img == null) return;
+    final File saved = await _files.copyIn(File(img.path));
+    setState(() => _attachments.add(Attachment(type: 'image', path: saved.path)));
+  }
+
   Future<void> _newDrawing() async {
     final Uint8List? png = await Navigator.of(context).push<Uint8List>(
       MaterialPageRoute<Uint8List>(builder: (_) => const DrawPage()),
@@ -44,6 +55,12 @@ class _EditPageState extends State<EditPage> {
 
   void _removeAttachment(Attachment a) {
     setState(() => _attachments.remove(a));
+  }
+
+  void _openAttachment(Attachment a) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(builder: (_) => ImageViewerPage(file: File(a.path))),
+    );
   }
 
   @override
@@ -110,19 +127,22 @@ class _EditPageState extends State<EditPage> {
                     final Attachment a = _attachments[index];
                     return Stack(
                       children: <Widget>[
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: Image.file(
-                            File(a.path),
-                            width: 128,
-                            height: 96,
-                            fit: BoxFit.cover,
-                            errorBuilder: (_, __, ___) => Container(
+                        InkWell(
+                          onTap: () => _openAttachment(a),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.file(
+                              File(a.path),
                               width: 128,
                               height: 96,
-                              color: Theme.of(context).colorScheme.surfaceVariant,
-                              alignment: Alignment.center,
-                              child: const Icon(Icons.broken_image_outlined),
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, __, ___) => Container(
+                                width: 128,
+                                height: 96,
+                                color: Theme.of(context).colorScheme.surfaceVariant,
+                                alignment: Alignment.center,
+                                child: const Icon(Icons.broken_image_outlined),
+                              ),
                             ),
                           ),
                         ),
@@ -161,6 +181,13 @@ class _EditPageState extends State<EditPage> {
                   icon: const Icon(Icons.brush_outlined),
                   label: const Text('Add Drawing'),
                 ),
+                const SizedBox(width: 8),
+                if (Platform.isAndroid)
+                  ElevatedButton.icon(
+                    onPressed: _takePhoto,
+                    icon: const Icon(Icons.photo_camera_outlined),
+                    label: const Text('Take Photo'),
+                  ),
               ],
             ),
             const SizedBox(height: 12),

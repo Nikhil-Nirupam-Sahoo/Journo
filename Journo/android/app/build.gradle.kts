@@ -6,6 +6,7 @@ plugins {
 }
 
 android {
+<<<<<<< HEAD
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
@@ -14,17 +15,29 @@ android {
     kotlinOptions {
         jvmTarget = '17'
     }
+=======
+>>>>>>> 6c676a37de101b535ebf0b395bb3e7da300ed52f
     namespace = "com.example.journo"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+<<<<<<< HEAD
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_11.toString()
+=======
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+        coreLibraryDesugaringEnabled = true
+    }
+
+    kotlinOptions {
+        jvmTarget = "17"
+>>>>>>> 6c676a37de101b535ebf0b395bb3e7da300ed52f
     }
 
     defaultConfig {
@@ -47,6 +60,13 @@ android {
     }
 }
 
+<<<<<<< HEAD
+=======
+dependencies {
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
+}
+
+>>>>>>> 6c676a37de101b535ebf0b395bb3e7da300ed52f
 flutter {
     source = "../.."
 }
